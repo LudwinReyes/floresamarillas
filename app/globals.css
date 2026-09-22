@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-tulip: #F6C945;
+    --color-tulip-soft: #FFE98A;
+    --color-cream: #FFF8E7;
+    --color-green-natural: #567D46;
+    --color-green-dark: #263A29;
+    --color-warm-white: #FCFBF7;
+    --color-soft-dark: #1F221E;
+  }
+
+  body {
+    background-color: #0E100D;
+    color: #FFF8E7;
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+}
+
+.font-serif {
+  font-family: var(--font-playfair), Georgia, Cambria, serif;
+}
+
+.font-sans {
+  font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.font-handwriting {
+  font-family: var(--font-caveat), "Dancing Script", cursive;
+}
+
+/* Safe areas for iPhone 16 Pro Max Dynamic Island and Home Indicator */
+.pt-safe {
+  padding-top: max(1.25rem, env(safe-area-inset-top));
+}
+
+.pb-safe {
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
+.top-safe {
+  top: max(1.25rem, env(safe-area-inset-top));
+}
+
+.bottom-safe {
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
+/* Custom romantic animations */
+@keyframes sway-gentle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+
+@keyframes sway-reverse {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-3deg);
+  }
+}
+
+@keyframes floating-dust {
+  0% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-25px) translateX(12px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-50px) translateX(-8px);
+    opacity: 0;
+  }
+}
+
+@keyframes golden-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px 2px rgba(246, 201, 69, 0.25), 0 0 45px 5px rgba(246, 201, 69, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 35px 8px rgba(246, 201, 69, 0.45), 0 0 70px 15px rgba(246, 201, 69, 0.2);
+  }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-20deg);
+  }
+}
+
+.animate-sway {
+  animation: sway-gentle 6s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-sway-slow {
+  animation: sway-reverse 8s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-golden-glow {
+  animation: golden-pulse 3.5s ease-in-out infinite;
+}
+
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 248, 231, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer-sweep 3.8s ease-in-out infinite;
+}
+
+/* Paper textured styling for the letter */
+.paper-texture {
+  background-color: #FAF4E6;
+  background-image: radial-gradient(#E8DECA 0.75px, transparent 0.75px), radial-gradient(#E8DECA 0.75px, #FAF4E6 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+/* Hide scrollbars cleanly */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
