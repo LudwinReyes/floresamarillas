@@ -52,38 +52,35 @@
   bottom: max(1.25rem, env(safe-area-inset-bottom));
 }
 
-/* Custom romantic animations */
-@keyframes sway-gentle {
+/* GPU Hardware-Accelerated Sway Keyframes (Metal/WebKit 120 FPS) */
+@keyframes tulip-breeze-a {
   0%, 100% {
-    transform: rotate(0deg);
+    transform: rotate(var(--tilt, 0deg)) translateZ(0);
   }
   50% {
-    transform: rotate(2.5deg);
+    transform: rotate(calc(var(--tilt, 0deg) + 2.8deg)) translateZ(0);
   }
 }
 
-@keyframes sway-reverse {
+@keyframes tulip-breeze-b {
   0%, 100% {
-    transform: rotate(0deg);
+    transform: rotate(var(--tilt, 0deg)) translateZ(0);
   }
   50% {
-    transform: rotate(-3deg);
+    transform: rotate(calc(var(--tilt, 0deg) - 2.8deg)) translateZ(0);
   }
 }
 
-@keyframes floating-dust {
-  0% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.2;
-  }
-  50% {
-    transform: translateY(-25px) translateX(12px);
-    opacity: 0.8;
-  }
-  100% {
-    transform: translateY(-50px) translateX(-8px);
-    opacity: 0;
-  }
+.tulip-sway-a {
+  animation: tulip-breeze-a var(--sway-dur, 5.5s) ease-in-out infinite;
+  transform-origin: bottom center;
+  will-change: transform;
+}
+
+.tulip-sway-b {
+  animation: tulip-breeze-b var(--sway-dur, 6.2s) ease-in-out infinite;
+  transform-origin: bottom center;
+  will-change: transform;
 }
 
 @keyframes golden-pulse {
@@ -97,21 +94,11 @@
 
 @keyframes shimmer-sweep {
   0% {
-    transform: translateX(-150%) skewX(-20deg);
+    transform: translateX(-150%) skewX(-20deg) translateZ(0);
   }
   100% {
-    transform: translateX(200%) skewX(-20deg);
+    transform: translateX(200%) skewX(-20deg) translateZ(0);
   }
-}
-
-.animate-sway {
-  animation: sway-gentle 6s ease-in-out infinite;
-  transform-origin: bottom center;
-}
-
-.animate-sway-slow {
-  animation: sway-reverse 8s ease-in-out infinite;
-  transform-origin: bottom center;
 }
 
 .animate-golden-glow {
@@ -137,6 +124,7 @@
     rgba(255, 255, 255, 0) 100%
   );
   animation: shimmer-sweep 3.8s ease-in-out infinite;
+  transform: translateZ(0);
 }
 
 /* Paper textured styling for the letter */

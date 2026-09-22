@@ -9,27 +9,25 @@ import TulipFocusMoment from "@/components/TulipFocusMoment";
 import LetterMoment from "@/components/LetterMoment";
 import FinalGardenMoment from "@/components/FinalGardenMoment";
 
+// Hardware-accelerated GPU transitions (no expensive full-screen filter blur)
 const pageVariants: Variants = {
   initial: {
     opacity: 0,
-    filter: "blur(6px)",
     scale: 0.98,
   },
   animate: {
     opacity: 1,
-    filter: "blur(0px)",
     scale: 1,
     transition: {
-      duration: 1.2,
+      duration: 0.9,
       ease: "easeOut",
     },
   },
   exit: {
     opacity: 0,
-    filter: "blur(8px)",
-    scale: 1.02,
+    scale: 1.01,
     transition: {
-      duration: 0.9,
+      duration: 0.6,
       ease: "easeIn",
     },
   },
@@ -42,8 +40,8 @@ export default function Home() {
     <main className="relative min-h-[100dvh] w-full bg-[#0A0D0A] overflow-hidden">
       {/* Global floating golden pollen & fireflies */}
       <FloatingParticles
-        density={moment === 1 ? 25 : moment === 5 ? 55 : 38}
-        speed={moment === 1 ? 0.4 : 0.65}
+        density={moment === 1 ? 16 : 22}
+        speed={moment === 1 ? 0.4 : 0.55}
       />
 
       {/* Cinematic Single-Story Progression */}
