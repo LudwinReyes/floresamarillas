@@ -3,12 +3,8 @@
 @layer base {
   :root {
     --color-tulip: #F6C945;
-    --color-tulip-soft: #FFE98A;
     --color-cream: #FFF8E7;
-    --color-green-natural: #567D46;
     --color-green-dark: #263A29;
-    --color-warm-white: #FCFBF7;
-    --color-soft-dark: #1F221E;
   }
 
   body {
@@ -19,52 +15,55 @@
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
-    font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 
-.font-serif {
-  font-family: var(--font-playfair), Georgia, Cambria, serif;
-}
-.font-sans {
-  font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, sans-serif;
-}
-.font-handwriting {
-  font-family: var(--font-caveat), cursive;
-}
+.font-serif       { font-family: var(--font-playfair), Georgia, serif; }
+.font-sans        { font-family: var(--font-jakarta), -apple-system, sans-serif; }
+.font-handwriting { font-family: var(--font-caveat), cursive; }
 
-/* ─── SAFE AREAS (iPhone 16 Pro Max) ─────────────────────────────── */
-.pt-safe  { padding-top: max(1.25rem, env(safe-area-inset-top)); }
-.pb-safe  { padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
-.top-safe { top: max(1.25rem, env(safe-area-inset-top)); }
+/* ── SAFE AREA (iPhone Dynamic Island + Home Bar) ── */
+.pt-safe     { padding-top: max(1.25rem, env(safe-area-inset-top)); }
+.pb-safe     { padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+.top-safe    { top: max(1.25rem, env(safe-area-inset-top)); }
 .bottom-safe { bottom: max(1.25rem, env(safe-area-inset-bottom)); }
 
-/* ─── TULIP PURE-CSS ANIMATIONS (100% GPU / Metal) ──────────────── */
-/* Growth: clip-path reveal from bottom, no JS at all */
+/* ═══════════════════════════════════════════════════════
+   TULIP ANIMATIONS — 100% CSS, compositor/Metal only
+   Only `transform` and `opacity` are composited on iOS.
+═══════════════════════════════════════════════════════ */
+
+/* Grow-in: scaleY from 0→1 (transform = GPU only) */
 @keyframes tulip-grow {
-  from { clip-path: inset(100% 0 0 0); opacity: 0; }
-  to   { clip-path: inset(0% 0 0 0);   opacity: 1; }
+  0%   { transform: scaleY(0) translateZ(0); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: scaleY(1) translateZ(0); opacity: 1; }
+}
+.tulip-grow {
+  transform-origin: bottom center;
+  animation: tulip-grow var(--grow-dur, 0.9s) cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--grow-delay, 0s);
 }
 
-/* Breeze A – clockwise lean */
+/* Breeze A */
 @keyframes breeze-a {
   0%, 100% { transform: rotate(var(--t, 0deg)) translateZ(0); }
-  40%       { transform: rotate(calc(var(--t, 0deg) + 3deg)) translateZ(0); }
-  70%       { transform: rotate(calc(var(--t, 0deg) - 1.5deg)) translateZ(0); }
+  45%       { transform: rotate(calc(var(--t, 0deg) + 2.5deg)) translateZ(0); }
+  75%       { transform: rotate(calc(var(--t, 0deg) - 1.2deg)) translateZ(0); }
 }
-/* Breeze B – counter-clockwise lean */
+/* Breeze B */
 @keyframes breeze-b {
   0%, 100% { transform: rotate(var(--t, 0deg)) translateZ(0); }
-  40%       { transform: rotate(calc(var(--t, 0deg) - 3deg)) translateZ(0); }
-  70%       { transform: rotate(calc(var(--t, 0deg) + 1.5deg)) translateZ(0); }
+  45%       { transform: rotate(calc(var(--t, 0deg) - 2.5deg)) translateZ(0); }
+  75%       { transform: rotate(calc(var(--t, 0deg) + 1.2deg)) translateZ(0); }
 }
-
-/* Tap shake */
+/* Tap feedback */
 @keyframes tap-shake {
   0%   { transform: rotate(var(--t, 0deg)) translateZ(0); }
-  20%  { transform: rotate(calc(var(--t, 0deg) - 7deg)) translateZ(0); }
-  50%  { transform: rotate(calc(var(--t, 0deg) + 5deg)) translateZ(0); }
-  75%  { transform: rotate(calc(var(--t, 0deg) - 2deg)) translateZ(0); }
+  25%  { transform: rotate(calc(var(--t, 0deg) - 7deg)) translateZ(0); }
+  55%  { transform: rotate(calc(var(--t, 0deg) + 4deg)) translateZ(0); }
+  80%  { transform: rotate(calc(var(--t, 0deg) - 1.5deg)) translateZ(0); }
   100% { transform: rotate(var(--t, 0deg)) translateZ(0); }
 }
 
@@ -72,64 +71,65 @@
   transform-origin: bottom center;
   will-change: transform;
 }
-.tulip-root.breeze-a {
-  animation: breeze-a var(--dur, 5.5s) ease-in-out infinite;
-  animation-delay: var(--dly, 0s);
+.tulip-root.breeze-a { animation: breeze-a var(--dur, 5.5s) ease-in-out infinite; animation-delay: var(--dly, 0s); }
+.tulip-root.breeze-b { animation: breeze-b var(--dur, 6s)   ease-in-out infinite; animation-delay: var(--dly, 0s); }
+.tulip-root.tapped   { animation: tap-shake 0.6s ease-out forwards !important; }
+
+/* ═══════════════════════════════════════════════════════
+   TEXT / SCENE ANIMATIONS — opacity + translateY only
+═══════════════════════════════════════════════════════ */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px) translateZ(0); }
+  to   { opacity: 1; transform: translateY(0) translateZ(0); }
 }
-.tulip-root.breeze-b {
-  animation: breeze-b var(--dur, 6s) ease-in-out infinite;
-  animation-delay: var(--dly, 0s);
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-.tulip-root.tapped {
-  animation: tap-shake 0.6s ease-out forwards !important;
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92) translateZ(0); }
+  to   { opacity: 1; transform: scale(1) translateZ(0); }
 }
 
-/* Bloom entrance */
-.tulip-body {
-  animation: tulip-grow var(--grow-dur, 1.2s) ease-out forwards;
-  animation-delay: var(--grow-delay, 0s);
-  opacity: 0;
-}
+/* Utility classes */
+.anim-fade-up  { animation: fade-up  var(--d, 0.8s) cubic-bezier(0.25, 1, 0.5, 1) both; animation-delay: var(--dl, 0s); }
+.anim-fade-in  { animation: fade-in  var(--d, 0.7s) ease-out both; animation-delay: var(--dl, 0s); }
+.anim-scale-in { animation: scale-in var(--d, 0.7s) cubic-bezier(0.25, 1, 0.5, 1) both; animation-delay: var(--dl, 0s); }
 
-/* Whisper toast fade */
-@keyframes toast-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.88); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0px) scale(1); }
-}
-@keyframes toast-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
+/* ═══════════════════════════════════════════════════════
+   SCENE FADE — used by page.tsx to switch scenes
+═══════════════════════════════════════════════════════ */
+.scene-fade-enter { animation: fade-in 0.45s ease-out both; }
 
-/* ─── PAGE TRANSITIONS ─────────────────────────────────────────────── */
-/* Simple opacity-only for zero compositor cost */
-@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
-@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
-
-/* ─── GOLDEN BUTTON SHIMMER ───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   SHIMMER BUTTON
+═══════════════════════════════════════════════════════ */
 @keyframes shimmer-sweep {
-  0%   { transform: translateX(-150%) skewX(-20deg) translateZ(0); }
-  100% { transform: translateX(200%)  skewX(-20deg) translateZ(0); }
+  0%   { transform: translateX(-120%) skewX(-18deg) translateZ(0); }
+  100% { transform: translateX(200%)  skewX(-18deg) translateZ(0); }
 }
 .shimmer-effect { position: relative; overflow: hidden; }
 .shimmer-effect::after {
   content: "";
-  position: absolute; inset: 0;
-  width: 60%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,248,231,0.4) 50%, transparent 100%);
-  animation: shimmer-sweep 3.8s ease-in-out infinite;
+  position: absolute; inset: 0; width: 55%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,248,231,0.38) 50%, transparent 100%);
+  animation: shimmer-sweep 3.6s ease-in-out infinite;
   pointer-events: none;
 }
 
-/* ─── LETTER PAPER ─────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   LETTER PAPER
+═══════════════════════════════════════════════════════ */
 .paper-texture {
   background-color: #FAF4E6;
   background-image:
-    radial-gradient(#E8DECA 0.75px, transparent 0.75px),
-    radial-gradient(#E8DECA 0.75px, #FAF4E6 0.75px);
-  background-size: 30px 30px;
-  background-position: 0 0, 15px 15px;
+    radial-gradient(#E8DECA 0.7px, transparent 0.7px),
+    radial-gradient(#E8DECA 0.7px, #FAF4E6 0.7px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
 }
 
-/* ─── MISC ─────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   MISC
+═══════════════════════════════════════════════════════ */
 ::-webkit-scrollbar { width: 0; background: transparent; }

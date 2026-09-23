@@ -40,63 +40,56 @@ export default function Tulip({
       setTimeout(() => setTapped(false), 650);
       if (easterEggText) {
         setWhisper(true);
-        setTimeout(() => setWhisper(false), 3000);
+        setTimeout(() => setWhisper(false), 2800);
       }
       onClick?.();
     },
     [interactive, easterEggText, onClick]
   );
 
-  // Alternate breeze direction by id to create organic variety
-  const breezeClass = parseInt(id.replace(/\D/g, "") || "0", 10) % 2 === 0
-    ? "breeze-a"
-    : "breeze-b";
+  const breezeClass =
+    parseInt(id.replace(/\D/g, "") || "0", 10) % 2 === 0 ? "breeze-a" : "breeze-b";
 
   const svgW = 140 * scale;
   const svgH = height * scale;
-
-  // Unique-per-instance gradient IDs
-  const G = id;
+  const G = id; // gradient namespace
 
   return (
     <div
       className={`relative inline-block overflow-visible select-none ${
-        interactive ? "cursor-pointer active:scale-[0.97] transition-transform" : ""
+        interactive ? "cursor-pointer" : ""
       } ${className}`}
       style={{ transformOrigin: "bottom center" }}
       onClick={handleClick}
     >
-      {/* Whisper toast — pure CSS positioned, no JS physics */}
+      {/* Whisper toast — CSS only, no physics */}
       {whisper && easterEggText && (
         <div
-          className="absolute -top-14 left-1/2 z-50 pointer-events-none rounded-full border border-[#F6C945]/40 bg-[#1F221E]/95 px-4 py-1.5 text-xs text-[#FFE98A] font-serif whitespace-nowrap shadow-md"
-          style={{
-            animation: "toast-in 0.3s ease-out forwards",
-            transform: "translateX(-50%)",
-          }}
+          className="anim-scale-in absolute -top-14 left-1/2 z-50 pointer-events-none rounded-full border border-[#F6C945]/40 bg-[#1F221E]/95 px-4 py-1.5 text-xs text-[#FFE98A] font-serif whitespace-nowrap shadow-md"
+          style={{ transform: "translateX(-50%)", "--dl": "0s" } as React.CSSProperties}
         >
           {easterEggText}
         </div>
       )}
 
-      {/* ── Breeze wrapper: 100% CSS, no JS timer ── */}
+      {/* Breeze: pure CSS @keyframes, no JS */}
       <div
         className={`tulip-root ${tapped ? "tapped" : breezeClass} overflow-visible`}
         style={
           {
             "--t": `${tilt}deg`,
             "--dur": `${swayDuration}s`,
-            "--dly": `${(delay * 0.45) % 2.5}s`,
+            "--dly": `${(delay * 0.4) % 2.4}s`,
           } as React.CSSProperties
         }
       >
-        {/* ── Bloom entrance: clip-path from bottom ── */}
+        {/* Growth: scaleY from bottom (transform = compositor-only on Metal) */}
         <div
-          className="tulip-body overflow-visible"
+          className="tulip-grow overflow-visible"
           style={
             {
-              "--grow-dur": "1.0s",
-              "--grow-delay": `${delay * 0.35}s`,
+              "--grow-dur": "0.85s",
+              "--grow-delay": `${delay * 0.32}s`,
             } as React.CSSProperties
           }
         >
@@ -156,25 +149,11 @@ export default function Tulip({
             </defs>
 
             {/* Stem */}
-            <path
-              d="M75 320 C73 240 78 180 75 95"
-              stroke={`url(#s${G})`}
-              strokeWidth="5.5"
-              strokeLinecap="round"
-              fill="none"
-            />
+            <path d="M75 320 C73 240 78 180 75 95" stroke={`url(#s${G})`} strokeWidth="5.5" strokeLinecap="round" fill="none" />
 
-            {/* Left leaf */}
-            <path
-              d="M74 270 C50 240 25 210 22 165 C38 185 58 205 74 235Z"
-              fill={`url(#l1${G})`}
-            />
-
-            {/* Right leaf */}
-            <path
-              d="M76 250 C95 220 122 195 128 145 C114 175 96 195 75 220Z"
-              fill={`url(#l2${G})`}
-            />
+            {/* Leaves */}
+            <path d="M74 270 C50 240 25 210 22 165 C38 185 58 205 74 235Z" fill={`url(#l1${G})`} />
+            <path d="M76 250 C95 220 122 195 128 145 C114 175 96 195 75 220Z" fill={`url(#l2${G})`} />
 
             {/* Glow aura */}
             <circle cx="75" cy="70" r={isHero ? "50" : "38"} fill={`url(#gw${G})`} />
@@ -188,11 +167,11 @@ export default function Tulip({
             <path d="M74 94 C52 92 40 68 48 38 C58 35 68 50 74 72Z" fill={`url(#pl${G})`} />
             <path d="M76 94 C98 92 110 68 102 38 C92 35 82 50 76 72Z" fill={`url(#pr${G})`} />
 
-            {/* Front center petal */}
+            {/* Front petal */}
             <path d="M75 96 C58 92 54 58 75 30 C96 58 92 92 75 96Z" fill={`url(#pc${G})`} />
 
             {/* Specular shine */}
-            <path d="M75 42 C72 54 72 72 75 84 C76 72 76 54 75 42Z" fill="#FFF" opacity=".4" />
+            <path d="M75 42 C72 54 72 72 75 84 C76 72 76 54 75 42Z" fill="#FFF" opacity=".38" />
           </svg>
         </div>
       </div>
