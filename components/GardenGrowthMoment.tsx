@@ -97,7 +97,7 @@ export default function GardenGrowthMoment({ onNext }: GardenGrowthMomentProps) 
 
       {/* The blooming garden rising progressively from the ground */}
       <div className="relative w-full h-[46vh] sm:h-[48vh] z-20 overflow-visible">
-        <TulipGarden density="normal" />
+        <TulipGarden />
       </div>
     </div>
   );

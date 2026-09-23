@@ -127,7 +127,7 @@ export default function FinalGardenMoment({ onRestart }: FinalGardenMomentProps)
 
       {/* Lush overflowing garden with interactive tulips (Clean, zero clipping) */}
       <div className="relative w-full h-[46vh] sm:h-[48vh] z-20 overflow-visible">
-        <TulipGarden density="lush" onTulipClick={handleTulipEasterEgg} />
+        <TulipGarden onTulipClick={handleTulipEasterEgg} />
       </div>
     </div>
   );

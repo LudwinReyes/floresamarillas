@@ -26,117 +26,110 @@
 .font-serif {
   font-family: var(--font-playfair), Georgia, Cambria, serif;
 }
-
 .font-sans {
-  font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, sans-serif;
 }
-
 .font-handwriting {
-  font-family: var(--font-caveat), "Dancing Script", cursive;
+  font-family: var(--font-caveat), cursive;
 }
 
-/* Safe areas for iPhone 16 Pro Max Dynamic Island and Home Indicator */
-.pt-safe {
-  padding-top: max(1.25rem, env(safe-area-inset-top));
+/* ─── SAFE AREAS (iPhone 16 Pro Max) ─────────────────────────────── */
+.pt-safe  { padding-top: max(1.25rem, env(safe-area-inset-top)); }
+.pb-safe  { padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+.top-safe { top: max(1.25rem, env(safe-area-inset-top)); }
+.bottom-safe { bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+
+/* ─── TULIP PURE-CSS ANIMATIONS (100% GPU / Metal) ──────────────── */
+/* Growth: clip-path reveal from bottom, no JS at all */
+@keyframes tulip-grow {
+  from { clip-path: inset(100% 0 0 0); opacity: 0; }
+  to   { clip-path: inset(0% 0 0 0);   opacity: 1; }
 }
 
-.pb-safe {
-  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+/* Breeze A – clockwise lean */
+@keyframes breeze-a {
+  0%, 100% { transform: rotate(var(--t, 0deg)) translateZ(0); }
+  40%       { transform: rotate(calc(var(--t, 0deg) + 3deg)) translateZ(0); }
+  70%       { transform: rotate(calc(var(--t, 0deg) - 1.5deg)) translateZ(0); }
+}
+/* Breeze B – counter-clockwise lean */
+@keyframes breeze-b {
+  0%, 100% { transform: rotate(var(--t, 0deg)) translateZ(0); }
+  40%       { transform: rotate(calc(var(--t, 0deg) - 3deg)) translateZ(0); }
+  70%       { transform: rotate(calc(var(--t, 0deg) + 1.5deg)) translateZ(0); }
 }
 
-.top-safe {
-  top: max(1.25rem, env(safe-area-inset-top));
+/* Tap shake */
+@keyframes tap-shake {
+  0%   { transform: rotate(var(--t, 0deg)) translateZ(0); }
+  20%  { transform: rotate(calc(var(--t, 0deg) - 7deg)) translateZ(0); }
+  50%  { transform: rotate(calc(var(--t, 0deg) + 5deg)) translateZ(0); }
+  75%  { transform: rotate(calc(var(--t, 0deg) - 2deg)) translateZ(0); }
+  100% { transform: rotate(var(--t, 0deg)) translateZ(0); }
 }
 
-.bottom-safe {
-  bottom: max(1.25rem, env(safe-area-inset-bottom));
-}
-
-/* GPU Hardware-Accelerated Sway Keyframes (Metal/WebKit 120 FPS) */
-@keyframes tulip-breeze-a {
-  0%, 100% {
-    transform: rotate(var(--tilt, 0deg)) translateZ(0);
-  }
-  50% {
-    transform: rotate(calc(var(--tilt, 0deg) + 2.8deg)) translateZ(0);
-  }
-}
-
-@keyframes tulip-breeze-b {
-  0%, 100% {
-    transform: rotate(var(--tilt, 0deg)) translateZ(0);
-  }
-  50% {
-    transform: rotate(calc(var(--tilt, 0deg) - 2.8deg)) translateZ(0);
-  }
-}
-
-.tulip-sway-a {
-  animation: tulip-breeze-a var(--sway-dur, 5.5s) ease-in-out infinite;
+.tulip-root {
   transform-origin: bottom center;
   will-change: transform;
 }
-
-.tulip-sway-b {
-  animation: tulip-breeze-b var(--sway-dur, 6.2s) ease-in-out infinite;
-  transform-origin: bottom center;
-  will-change: transform;
+.tulip-root.breeze-a {
+  animation: breeze-a var(--dur, 5.5s) ease-in-out infinite;
+  animation-delay: var(--dly, 0s);
+}
+.tulip-root.breeze-b {
+  animation: breeze-b var(--dur, 6s) ease-in-out infinite;
+  animation-delay: var(--dly, 0s);
+}
+.tulip-root.tapped {
+  animation: tap-shake 0.6s ease-out forwards !important;
 }
 
-@keyframes golden-pulse {
-  0%, 100% {
-    box-shadow: 0 0 20px 2px rgba(246, 201, 69, 0.25), 0 0 45px 5px rgba(246, 201, 69, 0.1);
-  }
-  50% {
-    box-shadow: 0 0 35px 8px rgba(246, 201, 69, 0.45), 0 0 70px 15px rgba(246, 201, 69, 0.2);
-  }
+/* Bloom entrance */
+.tulip-body {
+  animation: tulip-grow var(--grow-dur, 1.2s) ease-out forwards;
+  animation-delay: var(--grow-delay, 0s);
+  opacity: 0;
 }
 
+/* Whisper toast fade */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.88); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0px) scale(1); }
+}
+@keyframes toast-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ─── PAGE TRANSITIONS ─────────────────────────────────────────────── */
+/* Simple opacity-only for zero compositor cost */
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* ─── GOLDEN BUTTON SHIMMER ───────────────────────────────────────── */
 @keyframes shimmer-sweep {
-  0% {
-    transform: translateX(-150%) skewX(-20deg) translateZ(0);
-  }
-  100% {
-    transform: translateX(200%) skewX(-20deg) translateZ(0);
-  }
+  0%   { transform: translateX(-150%) skewX(-20deg) translateZ(0); }
+  100% { transform: translateX(200%)  skewX(-20deg) translateZ(0); }
 }
-
-.animate-golden-glow {
-  animation: golden-pulse 3.5s ease-in-out infinite;
-}
-
-.shimmer-effect {
-  position: relative;
-  overflow: hidden;
-}
-
+.shimmer-effect { position: relative; overflow: hidden; }
 .shimmer-effect::after {
   content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: absolute; inset: 0;
   width: 60%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 248, 231, 0.4) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg, transparent 0%, rgba(255,248,231,0.4) 50%, transparent 100%);
   animation: shimmer-sweep 3.8s ease-in-out infinite;
-  transform: translateZ(0);
+  pointer-events: none;
 }
 
-/* Paper textured styling for the letter */
+/* ─── LETTER PAPER ─────────────────────────────────────────────────── */
 .paper-texture {
   background-color: #FAF4E6;
-  background-image: radial-gradient(#E8DECA 0.75px, transparent 0.75px), radial-gradient(#E8DECA 0.75px, #FAF4E6 0.75px);
+  background-image:
+    radial-gradient(#E8DECA 0.75px, transparent 0.75px),
+    radial-gradient(#E8DECA 0.75px, #FAF4E6 0.75px);
   background-size: 30px 30px;
   background-position: 0 0, 15px 15px;
 }
 
-/* Hide scrollbars cleanly */
-::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
+/* ─── MISC ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 0; background: transparent; }
